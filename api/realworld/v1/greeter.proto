@@ -3,8 +3,9 @@ syntax = "proto3";
 package realworld.v1;
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
-option go_package = "github.com/wizard-xie/realworld/api/realword/v1;v1";
+option go_package = "github.com/wizard-xie/realworld/api/realworld/v1;v1";
 
 // The greeting service definition.
 service RealWorld {
@@ -14,6 +15,34 @@ service RealWorld {
       get: "/realworld/{name}"
     };
   }
+
+  rpc Login (LoginRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      post: "/api/users/login",
+      body: "*",
+    };
+  }
+
+  rpc Registration (RegistrationRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      post:"/api/users",
+      body:"*",
+    };
+  }
+
+  rpc CurrentUser (google.protobuf.Empty) returns(UserResponse) {
+    option (google.api.http) = {
+      get: "/api/user",
+    };
+  }
+
+  rpc UpdateUser (UpdateUserRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      put:"/api/user",
+      body:"*",
+    };
+  }
+
 }
 
 // The request message containing the user's name.
@@ -24,4 +53,47 @@ message HelloRequest {
 // The response message containing the greetings
 message HelloReply {
   string message = 1;
+}
+
+message LoginRequest {
+
+  message User {
+      string email = 1;
+      string password = 2;
+  }
+
+  User user = 1;
+}
+
+message UserResponse {
+  User user = 1;
+}
+
+message User {
+  string email = 1;
+  string token = 2;
+  string username = 3;
+  string bio = 4;
+  string image = 5;
+}
+
+message RegistrationRequest {
+    message User {
+        string username = 1;
+        string email = 2;
+        string password = 3;
+    }
+
+    User user = 1;
+}
+
+message UpdateUserRequest {
+
+  message User {
+      string email = 1;
+      string bio = 2;
+      string image = 3;
+  }
+
+  User user = 1;
 }

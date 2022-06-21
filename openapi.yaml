@@ -7,6 +7,71 @@ info:
     description: The greeting service definition.
     version: 0.0.1
 paths:
+    /api/user:
+        get:
+            tags:
+                - RealWorld
+            operationId: RealWorld_CurrentUser
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.UserResponse'
+        put:
+            tags:
+                - RealWorld
+            operationId: RealWorld_UpdateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.UpdateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.UserResponse'
+    /api/users:
+        post:
+            tags:
+                - RealWorld
+            operationId: RealWorld_Registration
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.RegistrationRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.UserResponse'
+    /api/users/login:
+        post:
+            tags:
+                - RealWorld
+            operationId: RealWorld_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.UserResponse'
     /realworld/{name}:
         get:
             tags:
@@ -34,5 +99,63 @@ components:
                 message:
                     type: string
             description: The response message containing the greetings
+        realworld.v1.LoginRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/realworld.v1.LoginRequest_User'
+        realworld.v1.LoginRequest_User:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+        realworld.v1.RegistrationRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/realworld.v1.RegistrationRequest_User'
+        realworld.v1.RegistrationRequest_User:
+            type: object
+            properties:
+                username:
+                    type: string
+                email:
+                    type: string
+                password:
+                    type: string
+        realworld.v1.UpdateUserRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/realworld.v1.UpdateUserRequest_User'
+        realworld.v1.UpdateUserRequest_User:
+            type: object
+            properties:
+                email:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+        realworld.v1.User:
+            type: object
+            properties:
+                email:
+                    type: string
+                token:
+                    type: string
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+        realworld.v1.UserResponse:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/realworld.v1.User'
 tags:
     - name: RealWorld

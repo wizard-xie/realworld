@@ -8,6 +8,7 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -17,15 +18,27 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationRealWorldCurrentUser = "/realworld.v1.RealWorld/CurrentUser"
+const OperationRealWorldLogin = "/realworld.v1.RealWorld/Login"
+const OperationRealWorldRegistration = "/realworld.v1.RealWorld/Registration"
 const OperationRealWorldSayHello = "/realworld.v1.RealWorld/SayHello"
+const OperationRealWorldUpdateUser = "/realworld.v1.RealWorld/UpdateUser"
 
 type RealWorldHTTPServer interface {
+	CurrentUser(context.Context, *emptypb.Empty) (*UserResponse, error)
+	Login(context.Context, *LoginRequest) (*UserResponse, error)
+	Registration(context.Context, *RegistrationRequest) (*UserResponse, error)
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*UserResponse, error)
 }
 
 func RegisterRealWorldHTTPServer(s *http.Server, srv RealWorldHTTPServer) {
 	r := s.Route("/")
 	r.GET("/realworld/{name}", _RealWorld_SayHello0_HTTP_Handler(srv))
+	r.POST("/api/users/login", _RealWorld_Login0_HTTP_Handler(srv))
+	r.POST("/api/users", _RealWorld_Registration0_HTTP_Handler(srv))
+	r.GET("/api/user", _RealWorld_CurrentUser0_HTTP_Handler(srv))
+	r.PUT("/api/user", _RealWorld_UpdateUser0_HTTP_Handler(srv))
 }
 
 func _RealWorld_SayHello0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx http.Context) error {
@@ -50,8 +63,88 @@ func _RealWorld_SayHello0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx http.Co
 	}
 }
 
+func _RealWorld_Login0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in LoginRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationRealWorldLogin)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Login(ctx, req.(*LoginRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _RealWorld_Registration0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in RegistrationRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationRealWorldRegistration)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Registration(ctx, req.(*RegistrationRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _RealWorld_CurrentUser0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationRealWorldCurrentUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CurrentUser(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _RealWorld_UpdateUser0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateUserRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationRealWorldUpdateUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateUser(ctx, req.(*UpdateUserRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type RealWorldHTTPClient interface {
+	CurrentUser(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *UserResponse, err error)
+	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *UserResponse, err error)
+	Registration(ctx context.Context, req *RegistrationRequest, opts ...http.CallOption) (rsp *UserResponse, err error)
 	SayHello(ctx context.Context, req *HelloRequest, opts ...http.CallOption) (rsp *HelloReply, err error)
+	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *UserResponse, err error)
 }
 
 type RealWorldHTTPClientImpl struct {
@@ -62,6 +155,45 @@ func NewRealWorldHTTPClient(client *http.Client) RealWorldHTTPClient {
 	return &RealWorldHTTPClientImpl{client}
 }
 
+func (c *RealWorldHTTPClientImpl) CurrentUser(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*UserResponse, error) {
+	var out UserResponse
+	pattern := "/api/user"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationRealWorldCurrentUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *RealWorldHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*UserResponse, error) {
+	var out UserResponse
+	pattern := "/api/users/login"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationRealWorldLogin))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *RealWorldHTTPClientImpl) Registration(ctx context.Context, in *RegistrationRequest, opts ...http.CallOption) (*UserResponse, error) {
+	var out UserResponse
+	pattern := "/api/users"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationRealWorldRegistration))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *RealWorldHTTPClientImpl) SayHello(ctx context.Context, in *HelloRequest, opts ...http.CallOption) (*HelloReply, error) {
 	var out HelloReply
 	pattern := "/realworld/{name}"
@@ -69,6 +201,19 @@ func (c *RealWorldHTTPClientImpl) SayHello(ctx context.Context, in *HelloRequest
 	opts = append(opts, http.Operation(OperationRealWorldSayHello))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *RealWorldHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*UserResponse, error) {
+	var out UserResponse
+	pattern := "/api/user"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationRealWorldUpdateUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
