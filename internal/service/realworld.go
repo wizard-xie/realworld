@@ -11,17 +11,17 @@ import (
 type RealworldService struct {
 	v1.UnimplementedRealWorldServer
 
-	uc *biz.RealworldUsecase
+	uc *biz.UserUsecase
 }
 
 // NewRealworldService new a greeter service.
-func NewRealworldService(uc *biz.RealworldUsecase) *RealworldService {
+func NewRealworldService(uc *biz.UserUsecase) *RealworldService {
 	return &RealworldService{uc: uc}
 }
 
 // SayHello implements realworld.GreeterServer.
 func (s *RealworldService) SayHello(ctx context.Context, in *v1.HelloRequest) (*v1.HelloReply, error) {
-	g, err := s.uc.CreateGreeter(ctx, &biz.Realworld{Hello: in.Name})
+	g, err := s.uc.CreateUser(ctx, &biz.Realworld{Hello: in.Name})
 	if err != nil {
 		return nil, err
 	}

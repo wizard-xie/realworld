@@ -19,8 +19,8 @@ type Realworld struct {
 	Hello string
 }
 
-// RealwroldRepo is a Greater repo.
-type RealwroldRepo interface {
+// UserRepo is a Greater repo.
+type UserRepo interface {
 	Save(context.Context, *Realworld) (*Realworld, error)
 	Update(context.Context, *Realworld) (*Realworld, error)
 	FindByID(context.Context, int64) (*Realworld, error)
@@ -28,19 +28,19 @@ type RealwroldRepo interface {
 	ListAll(context.Context) ([]*Realworld, error)
 }
 
-// RealworldUsecase is a Greeter usecase.
-type RealworldUsecase struct {
-	repo RealwroldRepo
+// UserUsecase is a Greeter usecase.
+type UserUsecase struct {
+	repo UserRepo
 	log  *log.Helper
 }
 
-// NewRealworldUsecase new a Greeter usecase.
-func NewRealworldUsecase(repo RealwroldRepo, logger log.Logger) *RealworldUsecase {
-	return &RealworldUsecase{repo: repo, log: log.NewHelper(logger)}
+// NewUserUsecase new a Greeter usecase.
+func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
+	return &UserUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
-// CreateGreeter creates a Greeter, and returns the new Greeter.
-func (uc *RealworldUsecase) CreateGreeter(ctx context.Context, g *Realworld) (*Realworld, error) {
+// CreateUser creates a User, and returns the new user.
+func (uc *UserUsecase) CreateUser(ctx context.Context, g *Realworld) (*Realworld, error) {
 	uc.log.WithContext(ctx).Infof("CreateGreeter: %v", g.Hello)
 	return uc.repo.Save(ctx, g)
 }

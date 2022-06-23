@@ -20,12 +20,13 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+	db := data.NewGorm(confData)
+	dataData, cleanup, err := data.NewData(confData, logger, db)
 	if err != nil {
 		return nil, nil, err
 	}
-	realwroldRepo := data.NewRealworldRepo(dataData, logger)
-	realworldUsecase := biz.NewRealworldUsecase(realwroldRepo, logger)
+	realwroldRepo := data.NewUserRepo(dataData, logger)
+	realworldUsecase := biz.NewUserUsecase(realwroldRepo, logger)
 	realworldService := service.NewRealworldService(realworldUsecase)
 	httpServer := server.NewHTTPServer(confServer, realworldService, logger)
 	grpcServer := server.NewGRPCServer(confServer, realworldService, logger)
