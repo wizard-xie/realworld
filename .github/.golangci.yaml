@@ -6,22 +6,22 @@ run:
 linters:
   disable-all: true
   enable:
-    - containedctx  
-    - cyclop  
-    - deadcode
-    - errcheck 
-    - gosimple 
-    - govet
+    #- containedctx  
+    #- cyclop  
+    #- deadcode
+    #- errcheck 
+    #- gosimple 
+    #- govet
     - gomnd 
-    - gofmt
-    - gofumpt
-    - goimports
-    - ineffassign
-    - ifshort
-    - lll
-    - nlreturn
-    - revive
-    - unconvert
+    #- gofmt
+    #- gofumpt
+    #- goimports
+    #- ineffassign
+    #- ifshort
+    #- lll
+    #- nlreturn
+    #- revive
+    #- unconvert
    
   linters-settings:
     errcheck:
