@@ -20,3 +20,14 @@ func JWTAuthMiddleware() km.Middleware {
 		}
 	}
 }
+
+func lint() {
+	i := 8
+	if i == 0 {
+
+	} else if i == 2 {
+
+	} else if i == 3 {
+
+	}
+}
